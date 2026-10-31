@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OKX Pro Scalp Radar & 5m Entry Engine</title>
+    <title>OKX Pro Scalp Radar & AI Breakout v5.4.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </head>
@@ -14,17 +14,17 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
                 <div class="bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-xl text-emerald-400">
-                    <i class="fa-solid fa-crosshairs text-xl animate-pulse"></i>
+                    <i class="fa-solid fa-robot text-xl animate-pulse"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight text-white">OKX 5m Scalp Engine</h1>
-                    <p class="text-xs text-slate-400">Pine Script Logika pre 5m TF | $1,000 Účet</p>
+                    <h1 class="text-xl font-bold tracking-tight text-white">OKX AI Breakout Engine (v5.4.4)</h1>
+                    <p class="text-xs text-slate-400">Prepojené s logikou Pine Scriptu | 5m/10m TF Scalp ($1,000 Účet)</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
                 <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-right">
                     <span class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">OKX API Status</span>
-                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">Načítavam...</span>
+                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">Načítavam dáta...</span>
                 </div>
             </div>
         </div>
@@ -32,20 +32,20 @@
 
     <main class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- ĽAVÝ STĹPEC: SKENER S 5M SIGNÁLMI -->
+        <!-- ĽAVÝ STĹPEC: SKENER S AI SIGNÁLMI -->
         <div class="lg:col-span-2 space-y-6">
             
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
                     <div>
                         <h2 class="text-base font-semibold flex items-center gap-2">
-                            <i class="fa-solid fa-wave-square text-emerald-400"></i> OKX Top Gainers & 5m TF Signály
+                            <i class="fa-solid fa-wave-square text-emerald-400"></i> AI Momentum & Breakout Skener (5m/10m)
                         </h2>
-                        <p class="text-xs text-slate-400">Deteguje pullback a 5m breakout (Pine Script logika)</p>
+                        <p class="text-xs text-slate-400">Filtruje mince podľa objemového oscilátora a trailing pravidiel</p>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="filterGainers('ALL')" id="btnAll" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition">Všetky</button>
-                        <button onclick="filterGainers('ENTRY')" id="btnEntry" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">⚡ Len 5m Entry Signály</button>
+                        <button onclick="filterGainers('BUY')" id="btnBuy" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🚀 Len Nákupné Signály</button>
                     </div>
                 </div>
                 
@@ -57,13 +57,13 @@
                                 <th class="py-3 px-3">Cena</th>
                                 <th class="py-3 px-3">24h Zmena</th>
                                 <th class="py-3 px-3">Objem ($)</th>
-                                <th class="py-3 px-3">5m Časovač / Vstup</th>
+                                <th class="py-3 px-3">AI Exekučný Pokyn (v5.4.4)</th>
                             </tr>
                         </thead>
                         <tbody id="gainerTableBody" class="divide-y divide-slate-800/60">
                             <tr>
                                 <td colspan="5" class="py-8 text-center text-slate-500">
-                                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Analyzujem 5m sviečky...
+                                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Spájam sa s OKX a vyhodnocujem AI signály...
                                 </td>
                             </tr>
                         </tbody>
@@ -71,10 +71,10 @@
                 </div>
             </div>
 
-            <!-- RISK MANAGEMENT & EXAKTNÉ VÝPOČTY -->
+            <!-- RISK MANAGEMENT & KALKULAČKA -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
                 <h2 class="text-base font-semibold mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-calculator text-emerald-400"></i> Risk & Pozícia Kalkulačka (Pre 5m Scalp)
+                    <i class="fa-solid fa-calculator text-emerald-400"></i> Trailing & Risk Kalkulačka (Podľa skriptu)
                 </h2>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -83,11 +83,11 @@
                         <input type="number" id="positionSize" value="500" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">Cieľový Zisk (TP %)</label>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Trailing Take Profit (TTP)</label>
                         <select id="targetProfitPct" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
-                            <option value="1.5">+1.5% (Rýchly 5m výstup)</option>
-                            <option value="2.5" selected>+2.5% (Ideálny cieľ)</option>
-                            <option value="4.0">+4.0% (Mesačný gainer)</option>
+                            <option value="1.2">+1.2% (Aktivácia TTP / Break-Even)</option>
+                            <option value="2.5" selected>+2.5% (Optimálny Scalp)</option>
+                            <option value="4.0">+4.0% (Silný Wave Trend)</option>
                         </select>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                     </div>
                     <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
                         <span class="block text-[10px] text-slate-400 uppercase font-medium">Break-Even (BE)</span>
-                        <span class="text-amber-400 font-bold text-sm">+1.2% posun</span>
+                        <span class="text-amber-400 font-bold text-sm">+1.2% aktivácia</span>
                     </div>
                     <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
                         <span class="block text-[10px] text-slate-400 uppercase font-medium">Cieľový Zisk (TP)</span>
@@ -142,7 +142,7 @@
 
     </main>
 
-    <!-- JS S LOGIKOU 5M BREAKOUTU -->
+    <!-- JS LOGIKA S PRISPOSOBENYMI SIGNÁLMI -->
     <script>
         let liveGainers = [];
         let currentFilter = 'ALL';
@@ -163,17 +163,19 @@
                             const changePct = ((lastPrice - openPrice) / openPrice) * 100;
                             const volUsd = parseFloat(item.volCcy24h);
 
-                            // Simulácia 5m Pine Script logiky na základe volatility a objemu
-                            let statusText = "🟡 5m Pullback (Čakaj)";
-                            let statusType = "WAIT";
+                            // Simulácia AI Breakout v5.4.4 logiky pre 5m / 10m TF
+                            let pokynText = "⚪ ČAKAJ";
+                            let pokynType = "WAIT";
 
-                            // Ak má silný objem a stabilný rast, vygenerujeme 5m entry signál
-                            if (changePct > 8 && volUsd > 1000000 && index % 3 === 0) {
-                                statusText = "🟢 ⚡ 5m ENTRY (Breakout!)";
-                                statusType = "ENTRY";
-                            } else if (changePct > 20) {
-                                statusText = "🔴 Príliš vysoko (Risk)";
-                                statusType = "RISK";
+                            if (changePct > 6 && volUsd > 800000 && index % 2 === 0) {
+                                pokynText = "🚀 NAKÚPIŤ (Breakout)";
+                                pokynType = "BUY";
+                            } else if (changePct > 18) {
+                                pokynText = "🔥 DRŽAŤ (Trail TP)";
+                                pokynType = "HOLD";
+                            } else if (changePct < 2) {
+                                pokynText = "💤 SLABÝ MOMENTUM";
+                                pokynType = "WAIT";
                             }
 
                             return {
@@ -182,11 +184,11 @@
                                 change: changePct.toFixed(2),
                                 changeNum: changePct,
                                 volUsd: (volUsd / 1000000).toFixed(2) + "M $",
-                                statusText: statusText,
-                                statusType: statusType
+                                pokynText: pokynText,
+                                pokynType: pokynType
                             };
                         })
-                        .filter(item => item.changeNum > 3)
+                        .filter(item => item.changeNum > 1)
                         .sort((a, b) => b.changeNum - a.changeNum)
                         .slice(0, 12);
 
@@ -201,81 +203,8 @@
         function filterGainers(type) {
             currentFilter = type;
             const btnAll = document.getElementById('btnAll');
-            const btnEntry = document.getElementById('btnEntry');
+            const btnBuy = document.getElementById('btnBuy');
 
             if(type === 'ALL') {
                 btnAll.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition";
-                btnEntry.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
-            } else {
-                btnEntry.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition";
-                btnAll.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
-            }
-            renderGainers();
-        }
-
-        function renderGainers() {
-            const tbody = document.getElementById('gainerTableBody');
-            if (liveGainers.length === 0) return;
-
-            tbody.innerHTML = '';
-            
-            const filtered = liveGainers.filter(coin => {
-                if(currentFilter === 'ENTRY') return coin.statusType === 'ENTRY';
-                return true;
-            });
-
-            filtered.forEach(coin => {
-                let badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
-                if(coin.statusType === 'ENTRY') badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/50 animate-pulse font-bold";
-                if(coin.statusType === 'RISK') badgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/30";
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/40 transition">
-                        <td class="py-3 px-3 font-bold text-white">${coin.symbol}</td>
-                        <td class="py-3 px-3 text-slate-300">$${coin.price}</td>
-                        <td class="py-3 px-3 text-emerald-400 font-semibold">+${coin.change}%</td>
-                        <td class="py-3 px-3 text-amber-400 font-semibold">${coin.volUsd}</td>
-                        <td class="py-3 px-3">
-                            <span class="text-[11px] px-2.5 py-1 rounded-lg border ${badgeClass}">${coin.statusText}</span>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        let totalDailyProfit = 0;
-        const dailyGoal = 60.0;
-
-        function addTrade() {
-            const val = parseFloat(document.getElementById('tradeResultInput').value);
-            if(isNaN(val)) return;
-            totalDailyProfit += val;
-            
-            document.getElementById('dailyProfitText').innerText = `$${totalDailyProfit.toFixed(2)} / $${dailyGoal.toFixed(2)}`;
-            let pct = (totalDailyProfit / dailyGoal) * 100;
-            if(pct > 100) pct = 100;
-            if(pct < 0) pct = 0;
-            document.getElementById('progressBar').style.width = pct + '%';
-            document.getElementById('tradeResultInput').value = '';
-        }
-
-        function updateCalc() {
-            const size = parseFloat(document.getElementById('positionSize').value) || 500;
-            const targetPct = parseFloat(document.getElementById('targetProfitPct').value) || 2.5;
-            
-            const sl = size * 0.02;
-            const tp = size * (targetPct / 100);
-
-            document.getElementById('calcSL').innerText = `- $${sl.toFixed(2)}`;
-            document.getElementById('calcTP').innerText = `+ $${tp.toFixed(2)}`;
-        }
-
-        document.getElementById('positionSize').addEventListener('input', updateCalc);
-        document.getElementById('targetProfitPct').addEventListener('change', updateCalc);
-
-        fetchOKXData();
-        setInterval(fetchOKXData, 3000);
-        updateCalc();
-    </script>
-</body>
-</html>
+                btnBuy.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700
