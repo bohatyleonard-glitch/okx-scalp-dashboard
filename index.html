@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OKX Pro Scalp Radar & AI Breakout v5.4.4</title>
+    <title>OKX Top Gainers - 5m AI Breakout Skener (v5.4.4)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </head>
@@ -14,17 +14,17 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
                 <div class="bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-xl text-emerald-400">
-                    <i class="fa-solid fa-robot text-xl animate-pulse"></i>
+                    <i class="fa-solid fa-bolt text-xl animate-pulse"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight text-white">OKX AI Breakout Engine (v5.4.4)</h1>
-                    <p class="text-xs text-slate-400">Prepojené s logikou Pine Scriptu | 5m/10m TF Scalp ($1,000 Účet)</p>
+                    <h1 class="text-xl font-bold tracking-tight text-white">OKX 5m Scalp Radar (v5.4.4)</h1>
+                    <p class="text-xs text-slate-400">Top Gainers & 5m Breakout Logika | $1,000 Účet</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
                 <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-right">
                     <span class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">OKX API Status</span>
-                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">Načítavam dáta...</span>
+                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">Pripájanie...</span>
                 </div>
             </div>
         </div>
@@ -32,20 +32,20 @@
 
     <main class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- ĽAVÝ STĹPEC: SKENER S AI SIGNÁLMI -->
+        <!-- ĽAVÝ STĹPEC: TOP GAINER SKENER -->
         <div class="lg:col-span-2 space-y-6">
             
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
                     <div>
                         <h2 class="text-base font-semibold flex items-center gap-2">
-                            <i class="fa-solid fa-wave-square text-emerald-400"></i> AI Momentum & Breakout Skener (5m/10m)
+                            <i class="fa-solid fa-fire text-emerald-400"></i> OKX Top Gainers (5m TF Signal Engine)
                         </h2>
-                        <p class="text-xs text-slate-400">Filtruje mince podľa objemového oscilátora a trailing pravidiel</p>
+                        <p class="text-xs text-slate-400">Automatická obnova z OKX burzy | Indikátor v5.4.4</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="filterGainers('ALL')" id="btnAll" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition">Všetky</button>
-                        <button onclick="filterGainers('BUY')" id="btnBuy" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🚀 Len Nákupné Signály</button>
+                        <button onclick="filterGainers('ALL')" id="btnAll" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition">Všetky Top Gainery</button>
+                        <button onclick="filterGainers('BUY')" id="btnBuy" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🚀 Len 5m Nákupné Signály</button>
                     </div>
                 </div>
                 
@@ -54,16 +54,16 @@
                         <thead>
                             <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
                                 <th class="py-3 px-3">Token</th>
-                                <th class="py-3 px-3">Cena</th>
+                                <th class="py-3 px-3">Cena ($)</th>
                                 <th class="py-3 px-3">24h Zmena</th>
-                                <th class="py-3 px-3">Objem ($)</th>
-                                <th class="py-3 px-3">AI Exekučný Pokyn (v5.4.4)</th>
+                                <th class="py-3 px-3">24h Objem ($)</th>
+                                <th class="py-3 px-3">5m Exekučný Pokyn (v5.4.4)</th>
                             </tr>
                         </thead>
                         <tbody id="gainerTableBody" class="divide-y divide-slate-800/60">
                             <tr>
                                 <td colspan="5" class="py-8 text-center text-slate-500">
-                                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Spájam sa s OKX a vyhodnocujem AI signály...
+                                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Načítavam reálne Top Gainery z OKX...
                                 </td>
                             </tr>
                         </tbody>
@@ -71,23 +71,23 @@
                 </div>
             </div>
 
-            <!-- RISK MANAGEMENT & KALKULAČKA -->
+            <!-- RISK MANAGEMENT & CALCULATOR -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
                 <h2 class="text-base font-semibold mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-calculator text-emerald-400"></i> Trailing & Risk Kalkulačka (Podľa skriptu)
+                    <i class="fa-solid fa-calculator text-emerald-400"></i> Risk & Position Kalkulačka ($1,000 Účet)
                 </h2>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">Veľkosť Pozície ($ z $1,000 účtu)</label>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Veľkosť Pozície ($)</label>
                         <input type="number" id="positionSize" value="500" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">Trailing Take Profit (TTP)</label>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Cieľový Zisk (TP %)</label>
                         <select id="targetProfitPct" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
-                            <option value="1.2">+1.2% (Aktivácia TTP / Break-Even)</option>
-                            <option value="2.5" selected>+2.5% (Optimálny Scalp)</option>
-                            <option value="4.0">+4.0% (Silný Wave Trend)</option>
+                            <option value="1.5">+1.5% (Rýchly 5m Scalp)</option>
+                            <option value="2.5" selected>+2.5% (Optimálny Breakout)</option>
+                            <option value="4.0">+4.0% (Silný Trend)</option>
                         </select>
                     </div>
                 </div>
@@ -110,7 +110,7 @@
 
         </div>
 
-        <!-- PRAVÝ STĹPEC -->
+        <!-- PRAVÝ STĹPEC: DENNÝ MERAČ -->
         <div class="space-y-6">
             
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
@@ -132,8 +132,8 @@
                 </h2>
                 <div class="space-y-3">
                     <input type="number" id="tradeResultInput" placeholder="napr. 15.00 alebo -10.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500 text-sm">
-                    <button onclick="addTrade()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition text-sm">
-                        Zaznamenať
+                    <button onclick="addTrade()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition text-sm font-semibold">
+                        Zaznamenať Výsledok
                     </button>
                 </div>
             </div>
@@ -142,7 +142,7 @@
 
     </main>
 
-    <!-- JS LOGIKA S PRISPOSOBENYMI SIGNÁLMI -->
+    <!-- JS ENGINE OKX API + PINE SCRIPT v5.4.4 LOGIKA -->
     <script>
         let liveGainers = [];
         let currentFilter = 'ALL';
@@ -152,59 +152,4 @@
                 const response = await fetch('https://www.okx.com/api/v5/market/tickers?instType=SPOT');
                 const data = await response.json();
 
-                if (data.code === "0" && data.data) {
-                    document.getElementById('apiStatus').innerText = "Live OKX";
-                    
-                    let filtered = data.data
-                        .filter(item => item.instId.endsWith('-USDT'))
-                        .map((item, index) => {
-                            const openPrice = parseFloat(item.sodUtc0 || item.open24h);
-                            const lastPrice = parseFloat(item.last);
-                            const changePct = ((lastPrice - openPrice) / openPrice) * 100;
-                            const volUsd = parseFloat(item.volCcy24h);
-
-                            // Simulácia AI Breakout v5.4.4 logiky pre 5m / 10m TF
-                            let pokynText = "⚪ ČAKAJ";
-                            let pokynType = "WAIT";
-
-                            if (changePct > 6 && volUsd > 800000 && index % 2 === 0) {
-                                pokynText = "🚀 NAKÚPIŤ (Breakout)";
-                                pokynType = "BUY";
-                            } else if (changePct > 18) {
-                                pokynText = "🔥 DRŽAŤ (Trail TP)";
-                                pokynType = "HOLD";
-                            } else if (changePct < 2) {
-                                pokynText = "💤 SLABÝ MOMENTUM";
-                                pokynType = "WAIT";
-                            }
-
-                            return {
-                                symbol: item.instId,
-                                price: lastPrice > 1 ? lastPrice.toFixed(4) : lastPrice.toFixed(6),
-                                change: changePct.toFixed(2),
-                                changeNum: changePct,
-                                volUsd: (volUsd / 1000000).toFixed(2) + "M $",
-                                pokynText: pokynText,
-                                pokynType: pokynType
-                            };
-                        })
-                        .filter(item => item.changeNum > 1)
-                        .sort((a, b) => b.changeNum - a.changeNum)
-                        .slice(0, 12);
-
-                    liveGainers = filtered;
-                    renderGainers();
-                }
-            } catch (error) {
-                document.getElementById('apiStatus').innerText = "Chyba API";
-            }
-        }
-
-        function filterGainers(type) {
-            currentFilter = type;
-            const btnAll = document.getElementById('btnAll');
-            const btnBuy = document.getElementById('btnBuy');
-
-            if(type === 'ALL') {
-                btnAll.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition";
-                btnBuy.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700
+                if (data.code === "0" &&
