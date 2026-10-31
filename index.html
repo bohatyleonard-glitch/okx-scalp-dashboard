@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OKX Pre-Breakout Radar (v5.4.4 AI)</title>
+    <title>OKX Pre-Breakout Radar & Calendar (v5.4.4 AI)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
@@ -45,13 +45,13 @@
                     <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
                         OKX Pre-Breakout Radar <span class="text-xs px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30">v5.4.4 AI</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Detekcia mincí pred výstrelom (10-100%) | $1,000 Kapitál</p>
+                    <p class="text-xs text-slate-400">Detekcia mincí pred výstrelom | $1,000 Kapitál</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
                 <div class="glass-panel px-4 py-2 rounded-xl text-right">
                     <span class="block text-[10px] uppercase tracking-wider text-teal-400 font-semibold">Stav Skenera</span>
-                    <span class="text-emerald-400 font-bold text-sm">Hľadám signály pred výstrelom</span>
+                    <span class="text-emerald-400 font-bold text-sm">Hľadám signály 2% scalp</span>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@
                         <h2 class="text-base font-semibold flex items-center gap-2 text-teal-300">
                             <i class="fa-solid fa-crosshairs text-teal-400"></i> AI Skener Vstupov (5m / 10m TF)
                         </h2>
-                        <p class="text-xs text-slate-400">Filtruje mince v tichej akumulácii tesne pred explóziou</p>
+                        <p class="text-xs text-slate-400">Filtruje mince v tichej akumulácii pre rýchle 2% scalpy</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
                         <button onclick="filterGainers('ALL')" id="btnAll" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-teal-600 text-white transition shadow-[0_0_10px_rgba(13,148,136,0.4)]">Všetky</button>
@@ -109,9 +109,9 @@
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1">Cieľový Zisk (TP %)</label>
                         <select id="targetProfitPct" class="w-full bg-slate-950 border border-teal-900/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-400 text-sm">
+                            <option value="2.0" selected>+2.0% (Rýchly 2% Scalp)</option>
                             <option value="5.0">+5.0% (Skorý Výstrel)</option>
-                            <option value="15.0" selected>+15.0% (Veľký Breakout 10-20%)</option>
-                            <option value="30.0">+30.0% (Mega Wave Trend)</option>
+                            <option value="15.0">+15.0% (Veľký Breakout)</option>
                         </select>
                     </div>
                 </div>
@@ -123,18 +123,18 @@
                     </div>
                     <div class="bg-slate-950/80 p-3 rounded-xl border border-teal-900/30">
                         <span class="block text-[10px] text-slate-400 uppercase font-medium">Break-Even (BE)</span>
-                        <span class="text-amber-400 font-bold text-sm">+1.5% aktivácia</span>
+                        <span class="text-amber-400 font-bold text-sm">+1.0% aktivácia</span>
                     </div>
                     <div class="bg-slate-950/80 p-3 rounded-xl border border-teal-900/30">
                         <span class="block text-[10px] text-slate-400 uppercase font-medium">Cieľový Zisk (TP)</span>
-                        <span id="calcTP" class="text-emerald-400 font-bold text-sm">+$75.00</span>
+                        <span id="calcTP" class="text-emerald-400 font-bold text-sm">+$10.00</span>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- PRAVÝ STĹPEC: DENNÝ MERAČ -->
+        <!-- PRAVÝ STĹPEC: DENNÝ MERAČ A KALENDÁR HISTÓRIE -->
         <div class="space-y-6">
             
             <div class="glass-panel rounded-2xl p-5 shadow-2xl">
@@ -159,6 +159,21 @@
                     <button onclick="addTrade()" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-medium py-2.5 rounded-xl transition text-sm font-semibold shadow-[0_0_10px_rgba(13,148,136,0.4)]">
                         Zaznamenať Výsledok
                     </button>
+                </div>
+            </div>
+
+            <!-- KALENDÁR / HISTÓRIA DENNÝCH VÝSLEDKOV -->
+            <div class="glass-panel rounded-2xl p-5 shadow-2xl">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-base font-semibold flex items-center gap-2 text-teal-300">
+                        <i class="fa-solid fa-calendar-days text-teal-400"></i> Kalendár Výsledkov
+                    </h2>
+                    <button onclick="clearHistory()" class="text-[10px] text-slate-500 hover:text-rose-400 transition">Vymazať</button>
+                </div>
+                <p class="text-xs text-slate-400 mb-3">Prehľad ziskov a strát podľa dní:</p>
+                
+                <div id="calendarList" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                    <!-- Dynamicky generovaná história -->
                 </div>
             </div>
 
@@ -306,25 +321,89 @@
             renderGainers();
         }
 
+        // --- KALENDÁR A SPRÁVA DENNÝCH VÝSLEDKOV ---
+        let dailyHistory = JSON.parse(localStorage.getItem('okx_daily_history')) || {};
         let totalDailyProfit = 0;
         const dailyGoal = 60.0;
 
-        function addTrade() {
-            const val = parseFloat(document.getElementById('tradeResultInput').value);
-            if(isNaN(val)) return;
-            totalDailyProfit += val;
-            
+        function getTodayKey() {
+            const d = new Date();
+            return d.toISOString().split('T')[0]; // Formát YYYY-MM-DD
+        }
+
+        function initCalendar() {
+            const todayKey = getTodayKey();
+            if (dailyHistory[todayKey] !== undefined) {
+                totalDailyProfit = dailyHistory[todayKey];
+            } else {
+                totalDailyProfit = 0;
+            }
+            updateProgressDisplay();
+            renderCalendarList();
+        }
+
+        function updateProgressDisplay() {
             document.getElementById('dailyProfitText').innerText = `$${totalDailyProfit.toFixed(2)} / $${dailyGoal.toFixed(2)}`;
             let pct = (totalDailyProfit / dailyGoal) * 100;
             if(pct > 100) pct = 100;
             if(pct < 0) pct = 0;
             document.getElementById('progressBar').style.width = pct + '%';
+        }
+
+        function addTrade() {
+            const val = parseFloat(document.getElementById('tradeResultInput').value);
+            if(isNaN(val)) return;
+
+            totalDailyProfit += val;
+            const todayKey = getTodayKey();
+            dailyHistory[todayKey] = totalDailyProfit;
+
+            localStorage.setItem('okx_daily_history', JSON.stringify(dailyHistory));
+
+            updateProgressDisplay();
+            renderCalendarList();
             document.getElementById('tradeResultInput').value = '';
+        }
+
+        function renderCalendarList() {
+            const listContainer = document.getElementById('calendarList');
+            if(!listContainer) return;
+
+            listContainer.innerHTML = '';
+            const keys = Object.keys(dailyHistory).sort().reverse();
+
+            if(keys.length === 0) {
+                listContainer.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Zatiaľ žiadne záznamy</p>';
+                return;
+            }
+
+            keys.forEach(date => {
+                const amount = dailyHistory[date];
+                const isPositive = amount >= 0;
+                const colorClass = isPositive ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30';
+                const sign = isPositive ? '+' : '';
+
+                listContainer.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-950/80 px-3 py-2 rounded-xl border border-teal-900/30 text-xs">
+                        <span class="text-slate-300 font-medium"><i class="fa-regular fa-calendar text-teal-400 mr-2"></i>${date}</span>
+                        <span class="font-bold px-2 py-0.5 rounded border ${colorClass}">${sign}$${amount.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function clearHistory() {
+            if(confirm("Naozaj chcete vymazať celú históriu kalendára?")) {
+                localStorage.removeItem('okx_daily_history');
+                dailyHistory = {};
+                totalDailyProfit = 0;
+                initCalendar();
+            }
         }
 
         function updateCalc() {
             const size = parseFloat(document.getElementById('positionSize').value) || 500;
-            const targetPct = parseFloat(document.getElementById('targetProfitPct').value) || 15.0;
+            const targetPct = parseFloat(document.getElementById('targetProfitPct').value) || 2.0;
             
             const sl = size * 0.02; 
             const tp = size * (targetPct / 100); 
@@ -339,6 +418,7 @@
         window.onload = function() {
             renderGainers();
             updateCalc();
+            initCalendar();
         };
     </script>
 </body>
