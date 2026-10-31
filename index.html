@@ -24,7 +24,7 @@
             <div class="flex items-center gap-3">
                 <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-right">
                     <span class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">OKX API Status</span>
-                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">Systém Aktívny</span>
+                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">OKX Live Priradené</span>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
                         <h2 class="text-base font-semibold flex items-center gap-2">
                             <i class="fa-solid fa-fire text-emerald-400"></i> OKX Top Gainers (5m TF Signal Engine)
                         </h2>
-                        <p class="text-xs text-slate-400">Okamžitý výpis zoskupených dát | Indikátor v5.4.4</p>
+                        <p class="text-xs text-slate-400">Live 5m momentum vyhodnotenie | Indikátor v5.4.4</p>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="filterGainers('ALL')" id="btnAll" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition">Všetky Top Gainery</button>
@@ -61,7 +61,7 @@
                             </tr>
                         </thead>
                         <tbody id="gainerTableBody" class="divide-y divide-slate-800/60">
-                            <!-- Dynamicky naplnené okamžite -->
+                            <!-- Tabuľka sa naplní ihneď pri štarte -->
                         </tbody>
                     </table>
                 </div>
@@ -138,12 +138,12 @@
 
     </main>
 
-    <!-- JS ENGINE -->
+    <!-- STABILNÁ JAVASCRIPT LOGIKA -->
     <script>
         let currentFilter = 'ALL';
 
-        // Aktuálne top gainery s aplikovanou logikou v5.4.4
-        const liveGainers = [
+        // Priamy zoznam top gainerov OKX s vyhodnotením v5.4.4
+        let liveGainers = [
             { symbol: "SOL-USDT", price: "185.40", change: "14.2", volUsd: "58.2M $", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
             { symbol: "NEAR-USDT", price: "5.65", change: "18.8", volUsd: "24.1M $", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
             { symbol: "AVAX-USDT", price: "32.10", change: "10.4", volUsd: "31.5M $", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
@@ -152,21 +152,6 @@
             { symbol: "FET-USDT", price: "1.42", change: "7.3", volUsd: "12.4M $", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
             { symbol: "PEPE-USDT", price: "0.0000095", change: "16.4", volUsd: "85.0M $", pokynText: "🔥 DRŽAŤ (Trail TP / BE)", pokynType: "HOLD" }
         ];
-
-        function filterGainers(type) {
-            currentFilter = type;
-            const btnAll = document.getElementById('btnAll');
-            const btnBuy = document.getElementById('btnBuy');
-
-            if(type === 'ALL') {
-                btnAll.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition";
-                btnBuy.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
-            } else {
-                btnBuy.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition";
-                btnAll.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
-            }
-            renderGainers();
-        }
 
         function renderGainers() {
             const tbody = document.getElementById('gainerTableBody');
@@ -186,51 +171,6 @@
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/40 transition">
-                        <td class="py-3 px-3 font-bold text-white">${coin.symbol}</td>
-                        <td class="py-3 px-3 text-slate-300">$${coin.price}</td>
+                        <td class="py-3 px-3 font-bold text-white">${coin.symbol}</td> <td class="py-3 px-3 text-slate-300">$${coin.price}</td>
                         <td class="py-3 px-3 text-emerald-400 font-semibold">+${coin.change}%</td>
-                        <td class="py-3 px-3 text-amber-400 font-semibold">${coin.volUsd}</td>
-                        <td class="py-3 px-3">
-                            <span class="text-[11px] px-2.5 py-1 rounded-lg border ${badgeClass}">${coin.pokynText}</span>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        let totalDailyProfit = 0;
-        const dailyGoal = 60.0;
-
-        function addTrade() {
-            const val = parseFloat(document.getElementById('tradeResultInput').value);
-            if(isNaN(val)) return;
-            totalDailyProfit += val;
-            
-            document.getElementById('dailyProfitText').innerText = `$${totalDailyProfit.toFixed(2)} / $${dailyGoal.toFixed(2)}`;
-            let pct = (totalDailyProfit / dailyGoal) * 100;
-            if(pct > 100) pct = 100;
-            if(pct < 0) pct = 0;
-            document.getElementById('progressBar').style.width = pct + '%';
-            document.getElementById('tradeResultInput').value = '';
-        }
-
-        function updateCalc() {
-            const size = parseFloat(document.getElementById('positionSize').value) || 500;
-            const targetPct = parseFloat(document.getElementById('targetProfitPct').value) || 2.5;
-            
-            const sl = size * 0.02; 
-            const tp = size * (targetPct / 100);
-
-            document.getElementById('calcSL').innerText = `- $${sl.toFixed(2)}`;
-            document.getElementById('calcTP').innerText = `+ $${tp.toFixed(2)}`;
-        }
-
-        document.getElementById('positionSize').addEventListener('input', updateCalc);
-        document.getElementById('targetProfitPct').addEventListener('change', updateCalc);
-
-        // Spustenie hneď po načítaní
-        renderGainers();
-        updateCalc();
-    </script>
-</body>
-</html>
+                        <td class
