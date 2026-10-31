@@ -423,3 +423,93 @@
     </script>
 </body>
 </html>
+<!-- === DOPLNKOVÝ KALENDÁR === -->
+<div id="calendarExtensionContainer" class="max-w-7xl mx-auto px-4 mt-6">
+    <div class="glass-panel rounded-2xl p-5 shadow-2xl max-w-sm ml-auto">
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="text-base font-semibold flex items-center gap-2 text-teal-300">
+                <i class="fa-solid fa-calendar-days text-teal-400"></i> Kalendár Výsledkov
+            </h2>
+            <button onclick="clearHistory()" class="text-[10px] text-slate-500 hover:text-rose-400 transition">Vymazať</button>
+        </div>
+        <p class="text-xs text-slate-400 mb-3">Prehľad ziskov a strát podľa dní:</p>
+        <div id="calendarList" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+            <p class="text-xs text-slate-500 text-center py-2">Zatiaľ žiadne záznamy</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let dailyHistory = JSON.parse(localStorage.getItem('okx_daily_history')) || {};
+    
+    function getTodayKey() {
+        const d = new Date();
+        return d.toISOString().split('T')[0];
+    }
+
+    function initCalendar() {
+        const todayKey = getTodayKey();
+        if (dailyHistory[todayKey] !== undefined && typeof totalDailyProfit !== 'undefined') {
+            totalDailyProfit = dailyHistory[todayKey];
+            if(typeof updateProgressDisplay === 'function') updateProgressDisplay();
+        }
+        renderCalendarList();
+    }
+
+    function addTradeCalendarHook() {
+        const val = parseFloat(document.getElementById('tradeResultInput').value);
+        if(isNaN(val)) return;
+        const todayKey = getTodayKey();
+        dailyHistory[todayKey] = (dailyHistory[todayKey] || 0) + val;
+        localStorage.setItem('okx_daily_history', JSON.stringify(dailyHistory));
+        renderCalendarList();
+    }
+
+    // Prepojíme s existujúcou funkciou addTrade
+    const oldAddTrade = window.addTrade;
+    window.addTrade = function() {
+        if(oldAddTrade) oldAddTrade();
+        addTradeCalendarHook();
+    }
+
+    function renderCalendarList() {
+        const listContainer = document.getElementById('calendarList');
+        if(!listContainer) return;
+        listContainer.innerHTML = '';
+        const keys = Object.keys(dailyHistory).sort().reverse();
+
+        if(keys.length === 0) {
+            listContainer.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Zatiaľ žiadne záznamy</p>';
+            return;
+        }
+
+        keys.forEach(date => {
+            const amount = dailyHistory[date];
+            const isPositive = amount >= 0;
+            const colorClass = isPositive ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' : 'text-rose-400 bg-rose-500/10 border-rose-500/30';
+            const sign = isPositive ? '+' : '';
+
+            listContainer.innerHTML += `
+                <div class="flex justify-between items-center bg-slate-950/80 px-3 py-2 rounded-xl border border-teal-900/30 text-xs">
+                    <span class="text-slate-300 font-medium"><i class="fa-regular fa-calendar text-teal-400 mr-2"></i>${date}</span>
+                    <span class="font-bold px-2 py-0.5 rounded border ${colorClass}">${sign}$${amount.toFixed(2)}</span>
+                </div>
+            `;
+        });
+    }
+
+    function clearHistory() {
+        if(confirm("Naozaj chcete vymazať celú históriu kalendára?")) {
+            localStorage.removeItem('okx_daily_history');
+            dailyHistory = {};
+            if(typeof totalDailyProfit !== 'undefined') totalDailyProfit = 0;
+            if(typeof updateProgressDisplay === 'function') updateProgressDisplay();
+            renderCalendarList();
+        }
+    }
+
+    // Spustenie pri načítaní
+    window.addEventListener('load', () => {
+        initCalendar();
+    });
+</script>
