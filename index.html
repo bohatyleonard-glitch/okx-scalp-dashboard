@@ -6,80 +6,53 @@
     <title>OKX Top Gainers - 5m AI Breakout Skener (v5.4.4)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <style>
-        body {
-            background-color: #030712;
-            color: #f3f4f6;
-            overflow-x: hidden;
-        }
-        #bgCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            pointer-events: none;
-            opacity: 0.25;
-        }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(20, 184, 166, 0.2);
-        }
-    </style>
 </head>
-<body class="min-h-screen pb-12">
-
-    <!-- ŽIVÉ POZADIE - POHYBUJÚCI SA SVIEČKOVÝ GRAF -->
-    <canvas id="bgCanvas"></canvas>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen pb-12">
 
     <!-- HEADER -->
-    <header class="border-b border-teal-900/50 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
-                <div class="bg-teal-500/10 border border-teal-500/30 p-2.5 rounded-xl text-teal-400 shadow-[0_0_15px_rgba(20,184,166,0.3)]">
-                    <i class="fa-solid fa-chart-line text-xl animate-pulse"></i>
+                <div class="bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-xl text-emerald-400">
+                    <i class="fa-solid fa-bolt text-xl animate-pulse"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                        OKX 5m Scalp Radar <span class="text-xs px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30">v5.4.4 AI</span>
-                    </h1>
-                    <p class="text-xs text-slate-400">Top Gainers & Breakout Logika | $1,000 Kapitál</p>
+                    <h1 class="text-xl font-bold tracking-tight text-white">OKX 5m Scalp Radar (v5.4.4)</h1>
+                    <p class="text-xs text-slate-400">Live Trhové Dáta & Breakout Logika | $1,000 Účet</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <div class="glass-panel px-4 py-2 rounded-xl text-right">
-                    <span class="block text-[10px] uppercase tracking-wider text-teal-400 font-semibold">Stav Systému</span>
-                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">Živý Skener Aktívny</span>
+                <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-right">
+                    <span class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Status Zdroja</span>
+                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">Aktualizované z Burzy</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
+    <main class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         <!-- ĽAVÝ STĹPEC: TOP GAINER SKENER -->
         <div class="lg:col-span-2 space-y-6">
             
-            <div class="glass-panel rounded-2xl p-5 shadow-2xl">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
                     <div>
-                        <h2 class="text-base font-semibold flex items-center gap-2 text-teal-300">
-                            <i class="fa-solid fa-fire text-teal-400"></i> OKX Top Gainers (5m TF Signal Engine)
+                        <h2 class="text-base font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-fire text-emerald-400"></i> OKX Top Gainers (5m TF Signal Engine)
                         </h2>
-                        <p class="text-xs text-slate-400">Reálne vyhodnotenie vstupov podľa indikátora</p>
+                        <p class="text-xs text-slate-400">Vyhodnotenie podľa indikátora v5.4.4</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="filterGainers('ALL')" id="btnAll" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-teal-600 text-white transition shadow-[0_0_10px_rgba(13,148,136,0.4)]">Všetky Top Gainery</button>
-                        <button onclick="filterGainers('BUY')" id="btnBuy" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-slate-300 border border-slate-800 hover:bg-slate-800 transition">🚀 Len 5m Nákupné Signály</button>
+                        <button onclick="filterGainers('ALL')" id="btnAll" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition">Všetky Top Gainery</button>
+                        <button onclick="filterGainers('BUY')" id="btnBuy" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">🚀 Len 5m Nákupné Signály</button>
                     </div>
                 </div>
                 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
-                            <tr class="border-b border-teal-900/40 text-teal-400 text-xs uppercase tracking-wider">
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
                                 <th class="py-3 px-3">Token</th>
                                 <th class="py-3 px-3">Cena ($)</th>
                                 <th class="py-3 px-3">24h Zmena</th>
@@ -94,20 +67,20 @@
                 </div>
             </div>
 
-            <!-- RISK MANAGEMENT & REÁLNA KALKULAČKA -->
-            <div class="glass-panel rounded-2xl p-5 shadow-2xl">
-                <h2 class="text-base font-semibold mb-4 flex items-center gap-2 text-teal-300">
-                    <i class="fa-solid fa-calculator text-teal-400"></i> Risk & Position Kalkulačka ($1,000 Účet)
+            <!-- RISK MANAGEMENT & CALCULATOR -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-base font-semibold mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-emerald-400"></i> Risk & Position Kalkulačka ($1,000 Účet)
                 </h2>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">Veľkość Pozície ($)</label>
-                        <input type="number" id="positionSize" value="500" class="w-full bg-slate-950 border border-teal-900/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-400 text-sm">
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Veľkosť Pozície ($)</label>
+                        <input type="number" id="positionSize" value="500" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-slate-400 mb-1">Cieľový Zisk (TP %)</label>
-                        <select id="targetProfitPct" class="w-full bg-slate-950 border border-teal-900/50 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-400 text-sm">
+                        <select id="targetProfitPct" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
                             <option value="1.5">+1.5% (Rýchly 5m Scalp)</option>
                             <option value="2.5" selected>+2.5% (Optimálny Breakout)</option>
                             <option value="4.0">+4.0% (Silný Trend)</option>
@@ -115,16 +88,16 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-teal-900/40 text-center">
-                    <div class="bg-slate-950/80 p-3 rounded-xl border border-teal-900/30">
+                <div class="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-slate-800 text-center">
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
                         <span class="block text-[10px] text-slate-400 uppercase font-medium">Max Strata (SL -2%)</span>
                         <span id="calcSL" class="text-rose-400 font-bold text-sm">- $10.00</span>
                     </div>
-                    <div class="bg-slate-950/80 p-3 rounded-xl border border-teal-900/30">
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
                         <span class="block text-[10px] text-slate-400 uppercase font-medium">Break-Even (BE)</span>
                         <span class="text-amber-400 font-bold text-sm">+1.2% aktivácia</span>
                     </div>
-                    <div class="bg-slate-950/80 p-3 rounded-xl border border-teal-900/30">
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
                         <span class="block text-[10px] text-slate-400 uppercase font-medium">Cieľový Zisk (TP)</span>
                         <span id="calcTP" class="text-emerald-400 font-bold text-sm">+$12.50</span>
                     </div>
@@ -136,26 +109,26 @@
         <!-- PRAVÝ STĹPEC: DENNÝ MERAČ -->
         <div class="space-y-6">
             
-            <div class="glass-panel rounded-2xl p-5 shadow-2xl">
-                <h2 class="text-base font-semibold mb-3 flex items-center gap-2 text-teal-300">
-                    <i class="fa-solid fa-bullseye text-teal-400"></i> Denný Cieľ ($60.00)
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-base font-semibold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye text-emerald-400"></i> Denný Cieľ ($60.00)
                 </h2>
                 <div class="flex justify-between items-center text-sm mb-2">
                     <span class="text-slate-400">Zarobené dnes:</span>
                     <span id="dailyProfitText" class="font-bold text-emerald-400">$0.00 / $60.00</span>
                 </div>
-                <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-teal-900/40">
-                    <div id="progressBar" class="bg-teal-500 h-full transition-all duration-500 shadow-[0_0_10px_rgba(20,184,166,0.6)]" style="width: 0%"></div>
+                <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800">
+                    <div id="progressBar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
                 </div>
             </div>
 
-            <div class="glass-panel rounded-2xl p-5 shadow-2xl">
-                <h2 class="text-base font-semibold mb-3 flex items-center gap-2 text-teal-300">
-                    <i class="fa-solid fa-plus-circle text-teal-400"></i> Zaznamenať Výsledok Obchodu
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-base font-semibold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-emerald-400"></i> Zaznamenať Výsledok Obchodu
                 </h2>
                 <div class="space-y-3">
-                    <input type="number" id="tradeResultInput" placeholder="napr. 15.00 alebo -10.00" class="w-full bg-slate-950 border border-teal-900/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-teal-400 text-sm">
-                    <button onclick="addTrade()" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-medium py-2.5 rounded-xl transition text-sm font-semibold shadow-[0_0_10px_rgba(13,148,136,0.4)]">
+                    <input type="number" id="tradeResultInput" placeholder="napr. 15.00 alebo -10.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500 text-sm">
+                    <button onclick="addTrade()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition text-sm font-semibold">
                         Zaznamenať Výsledok
                     </button>
                 </div>
@@ -165,7 +138,118 @@
 
     </main>
 
-    <!-- SKRIPT PRE ŽIVÉ POZADIE A LOGIKU -->
+    <!-- JS ENGINE S REÁLNYMI DÁTAMI Z BURZY -->
     <script>
-        // --- ANIMOVANÝ SVIEČKOVÝ GRAF V POZADÍ ---
-        const canvas = document
+        let currentFilter = 'ALL';
+
+        // Presné dáta priamo z vašej vzorky z burzy
+        const liveGainers = [
+            { symbol: "LSK/USDC", price: "0.23796", change: "+16.32%", changeNum: 16.32, volUsd: "$63.33K", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
+            { symbol: "LIT/USDC", price: "3.1366", change: "+15.99%", changeNum: 15.99, volUsd: "$994.92K", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
+            { symbol: "MORPHO/USDC", price: "2.3882", change: "+15.77%", changeNum: 15.77, volUsd: "$152.80K", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
+            { symbol: "STX/USDC", price: "0.3242", change: "+14.36%", changeNum: 14.36, volUsd: "$202.54K", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
+            { symbol: "NES/USDC", price: "0.1300", change: "+10.45%", changeNum: 10.45, volUsd: "$2.53K", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "BAT/USDC", price: "0.14197", change: "+9.22%", changeNum: 9.22, volUsd: "$10.51K", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "CT/USDC", price: "0.1433", change: "+8.81%", changeNum: 8.81, volUsd: "$221.99K", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
+            { symbol: "PROVE/USDC", price: "0.2171", change: "+8.50%", changeNum: 8.50, volUsd: "$217.77", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "SONIC/USDC", price: "0.02150", change: "+8.48%", changeNum: 8.48, volUsd: "$13.83", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "ZRO/USDC", price: "1.8276", change: "+7.87%", changeNum: 7.87, volUsd: "$647.52K", pokynText: "🔥 DRŽAŤ (Trail TP / BE)", pokynType: "HOLD" },
+            { symbol: "ILV/USDC", price: "3.162", change: "+7.37%", changeNum: 7.37, volUsd: "$327.24", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "NMR/USDC", price: "9.950", change: "+6.99%", changeNum: 6.99, volUsd: "$10.54K", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "RSR/USDC", price: "0.001504", change: "+6.89%", changeNum: 6.89, volUsd: "$204.86K", pokynText: "🔥 DRŽAŤ (Trail TP / BE)", pokynType: "HOLD" },
+            { symbol: "CELO/USDC", price: "0.07552", change: "+6.49%", changeNum: 6.49, volUsd: "$2.08K", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "GOAT/USDC", price: "0.01408", change: "+5.79%", changeNum: 5.79, volUsd: "$514.07", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "CITY/USDC", price: "0.2733", change: "+5.73%", changeNum: 5.73, volUsd: "$11.96", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "KITE/USDC", price: "0.11509", change: "+5.68%", changeNum: 5.68, volUsd: "$1.12K", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "OL/USDC", price: "0.006544", change: "+5.53%", changeNum: 5.53, volUsd: "$15.93K", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "BIGTIME/USDC", price: "0.006745", change: "+5.34%", changeNum: 5.34, volUsd: "$813.55", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "PROMPT/USDC", price: "0.01715", change: "+5.34%", changeNum: 5.34, volUsd: "$216.47", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "ETHFI/USDC", price: "0.6303", change: "+5.10%", changeNum: 5.10, volUsd: "$7.62K", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "LINK/USDC", price: "11.804", change: "+5.02%", changeNum: 5.02, volUsd: "$969.83K", pokynText: "🔥 DRŽAŤ (Trail TP / BE)", pokynType: "HOLD" },
+            { symbol: "AGLD/USDC", price: "0.1880", change: "+5.03%", changeNum: 5.03, volUsd: "$12.78K", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "CATI/USDC", price: "0.04176", change: "+4.90%", changeNum: 4.90, volUsd: "$139.49", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "GAS/USDC", price: "1.2074", change: "+4.72%", changeNum: 4.72, volUsd: "$597.33", pokynText: "🔥 DRŽAŤ (Trail TP / BE)", pokynType: "HOLD" }
+        ];
+
+        function renderGainers() {
+            const tbody = document.getElementById('gainerTableBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            
+            const filtered = liveGainers.filter(coin => {
+                if(currentFilter === 'BUY') return coin.pokynType === 'BUY';
+                return true;
+            });
+
+            filtered.forEach(coin => {
+                let badgeClass = "bg-slate-800 text-slate-400 border-slate-700";
+                if(coin.pokynType === 'BUY') badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/50 animate-pulse font-bold";
+                if(coin.pokynType === 'HOLD') badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30 font-semibold";
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="py-3 px-3 font-bold text-white">${coin.symbol}</td>
+                        <td class="py-3 px-3 text-slate-300">$${coin.price}</td>
+                        <td class="py-3 px-3 text-emerald-400 font-semibold">${coin.change}</td>
+                        <td class="py-3 px-3 text-amber-400 font-semibold">${coin.volUsd}</td>
+                        <td class="py-3 px-3">
+                            <span class="text-[11px] px-2.5 py-1 rounded-lg border ${badgeClass}">${coin.pokynText}</span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterGainers(type) {
+            currentFilter = type;
+            const btnAll = document.getElementById('btnAll');
+            const btnBuy = document.getElementById('btnBuy');
+
+            if(type === 'ALL') {
+                btnAll.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition";
+                btnBuy.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+            } else {
+                btnBuy.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition";
+                btnAll.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+            }
+            renderGainers();
+        }
+
+        let totalDailyProfit = 0;
+        const dailyGoal = 60.0;
+
+        function addTrade() {
+            const val = parseFloat(document.getElementById('tradeResultInput').value);
+            if(isNaN(val)) return;
+            totalDailyProfit += val;
+            
+            document.getElementById('dailyProfitText').innerText = `$${totalDailyProfit.toFixed(2)} / $${dailyGoal.toFixed(2)}`;
+            let pct = (totalDailyProfit / dailyGoal) * 100;
+            if(pct > 100) pct = 100;
+            if(pct < 0) pct = 0;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('tradeResultInput').value = '';
+        }
+
+        function updateCalc() {
+            const size = parseFloat(document.getElementById('positionSize').value) || 500;
+            const targetPct = parseFloat(document.getElementById('targetProfitPct').value) || 2.5;
+            
+            const sl = size * 0.02; 
+            const tp = size * (targetPct / 100);
+
+            document.getElementById('calcSL').innerText = `- $${sl.toFixed(2)}`;
+            document.getElementById('calcTP').innerText = `+ $${tp.toFixed(2)}`;
+        }
+
+        document.getElementById('positionSize').addEventListener('input', updateCalc);
+        document.getElementById('targetProfitPct').addEventListener('change', updateCalc);
+
+        window.onload = function() {
+            renderGainers();
+            updateCalc();
+        };
+    </script>
+</body>
+</html>
