@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OKX Top Gainer Scalp Dashboard ($1K Account)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen pb-12">
+
+    <!-- HEADER / NAV -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-xl text-emerald-400">
+                    <i class="fa-solid fa-bolt text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">OKX Scalp Radar & Dashboard</h1>
+                    <p class="text-xs text-slate-400">Dual-Account Architecture | Scalping Účet ($1,000)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-right">
+                    <span class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Denný Cieľ Zisku</span>
+                    <span class="text-emerald-400 font-bold text-sm">+$50.00 – +$70.00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- ĽAVÝ STĹPEC: TOP GAINER SKENER & ZOZNAM -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Filter & Status Bar -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-base font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-radar text-emerald-400"></i> OKX Top Gainer Skener (+8% až +25%)
+                    </h2>
+                    <span class="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-full font-medium">Live Filter Active</span>
+                </div>
+                
+                <!-- Tabuľka mincí -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
+                                <th class="py-3 px-3">Token</th>
+                                <th class="py-3 px-3">Cena ($)</th>
+                                <th class="py-3 px-3">24h Zmena</th>
+                                <th class="py-3 px-3">RVOL (Objem)</th>
+                                <th class="py-3 px-3">Akcia</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gainerTableBody" class="divide-y divide-slate-800/60">
+                            <!-- Dynamicky naplnené cez JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Kalkulačka & Risk Management pre Scalping -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-base font-semibold mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-emerald-400"></i> Risk & Position Kalkulačka (Stop-Loss / BE / TP)
+                </h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Veľkosť Pozície ($)</label>
+                        <input type="number" id="positionSize" value="1000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Cieľový Zisk Skalpu (%)</label>
+                        <select id="targetProfitPct" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
+                            <option value="1.5">+1.5% (Rýchly skalp)</option>
+                            <option value="2.5" selected>+2.5% (Optimálny cieľ)</option>
+                            <option value="4.0">+4.0% (Silný gainer)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-slate-800 text-center">
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
+                        <span class="block text-[10px] text-slate-400 uppercase font-medium">Ochranný SL (-2%)</span>
+                        <span id="calcSL" class="text-rose-400 font-bold text-sm">- $20.00</span>
+                    </div>
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
+                        <span class="block text-[10px] text-slate-400 uppercase font-medium">Break-Even (BE)</span>
+                        <span class="text-amber-400 font-bold text-sm">+1.2% posun</span>
+                    </div>
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
+                        <span class="block text-[10px] text-slate-400 uppercase font-medium">Cieľový Zisk (TP)</span>
+                        <span id="calcTP" class="text-emerald-400 font-bold text-sm">+$25.00</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PRAVÝ STĹPEC: DENNÝ PROGRESS & LOG OBCHODOV -->
+        <div class="space-y-6">
+            
+            <!-- Progres bar -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-base font-semibold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye text-emerald-400"></i> Denný Cieľový Merač
+                </h2>
+                <div class="flex justify-between items-center text-sm mb-2">
+                    <span class="text-slate-400">Zarobené dnes:</span>
+                    <span id="dailyProfitText" class="font-bold text-emerald-400">$0.00 / $60.00</span>
+                </div>
+                <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800">
+                    <div id="progressBar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-3">💡 Tip: Po dosiahnutí cieľa ($60) ukončite obchodovanie na dnešný deň (Pravidlo 3 a dosť).</p>
+            </div>
+
+            <!-- Simulačné tlačidlo pridania obchodu -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-base font-semibold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-emerald-400"></i> Rýchly Zaznamenávač Obchodu
+                </h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Výsledok obchodu ($)</label>
+                        <input type="number" id="tradeResultInput" placeholder="napr. 25.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500 text-sm">
+                    </div>
+                    <button onclick="addTrade()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition shadow-lg shadow-emerald-600/20 text-sm">
+                        Zaznamenať zisk/stratu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Prehľad OKX Pod-účtov -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-base font-semibold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-server text-emerald-400"></i> Stav Architektúry
+                </h2>
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                        <span class="text-slate-300">Swing Účet ($3,000):</span>
+                        <span class="text-emerald-400 font-semibold">Aktívny (45m SOL)</span>
+                    </div>
+                    <div class="flex justify-between p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                        <span class="text-slate-300">Scalp Účet ($1,000):</span>
+                        <span class="text-emerald-400 font-semibold">Pripravený (Manual)</span>
+                    </div>
+                    <div class="flex justify-between p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+                        <span class="text-slate-300">Dashboard Hosting:</span>
+                        <span class="text-emerald-400 font-semibold">Samostatný (Netlify)</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- JAVASCRIPT LOGIKA -->
+    <script>
+        const mockGainers = [
+            { symbol: "SOL-USDC", price: "184.50", change: "+12.4%", rvol: "3.2x", status: "🔥 Breakout Ready" },
+            { symbol: "AVAX-USDC", price: "32.10", change: "+9.8%", rvol: "2.8x", status: "⚡ Silný Momentum" },
+            { symbol: "NEAR-USDC", price: "5.45", change: "+16.2%", rvol: "4.1x", status: "🔥 Breakout Ready" },
+            { symbol: "RENDER-USDC", price: "7.80", change: "+14.5%", rvol: "2.5x", status: "📈 Konsolidácia" }
+        ];
+
+        function renderGainers() {
+            const tbody = document.getElementById('gainerTableBody');
+            tbody.innerHTML = '';
+            mockGainers.forEach(coin => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="py-3 px-3 font-bold text-white">${coin.symbol}</td>
+                        <td class="py-3 px-3 text-slate-300">$${coin.price}</td>
+                        <td class="py-3 px-3 text-emerald-400 font-semibold">${coin.change}</td>
+                        <td class="py-3 px-3 text-amber-400 font-semibold">${coin.rvol}</td>
+                        <td class="py-3 px-3">
+                            <span class="text-[11px] bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700">${coin.status}</span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        let totalDailyProfit = 0;
+        const dailyGoal = 60.0;
+
+        function addTrade() {
+            const val = parseFloat(document.getElementById('tradeResultInput').value);
+            if(isNaN(val)) return;
+            totalDailyProfit += val;
+            
+            document.getElementById('dailyProfitText').innerText = `$${totalDailyProfit.toFixed(2)} / $${dailyGoal.toFixed(2)}`;
+            let pct = (totalDailyProfit / dailyGoal) * 100;
+            if(pct > 100) pct = 100;
+            if(pct < 0) pct = 0;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('tradeResultInput').value = '';
+        }
+
+        function updateCalc() {
+            const size = parseFloat(document.getElementById('positionSize').value) || 1000;
+            const targetPct = parseFloat(document.getElementById('targetProfitPct').value) || 2.5;
+            
+            const sl = size * 0.02; 
+            const tp = size * (targetPct / 100);
+
+            document.getElementById('calcSL').innerText = `- $${sl.toFixed(2)}`;
+            document.getElementById('calcTP').innerText = `+ $${tp.toFixed(2)}`;
+        }
+
+        document.getElementById('positionSize').addEventListener('input', updateCalc);
+        document.getElementById('targetProfitPct').addEventListener('change', updateCalc);
+
+        renderGainers();
+        updateCalc();
+    </script>
+</body>
+</html>
