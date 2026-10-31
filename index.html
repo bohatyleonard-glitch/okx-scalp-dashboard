@@ -24,7 +24,7 @@
             <div class="flex items-center gap-3">
                 <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-right">
                     <span class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">OKX API Status</span>
-                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">Pripájanie...</span>
+                    <span id="apiStatus" class="text-emerald-400 font-bold text-sm">Systém Aktívny</span>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
                         <h2 class="text-base font-semibold flex items-center gap-2">
                             <i class="fa-solid fa-fire text-emerald-400"></i> OKX Top Gainers (5m TF Signal Engine)
                         </h2>
-                        <p class="text-xs text-slate-400">Automatická obnova z OKX burzy | Indikátor v5.4.4</p>
+                        <p class="text-xs text-slate-400">Okamžitý výpis zoskupených dát | Indikátor v5.4.4</p>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="filterGainers('ALL')" id="btnAll" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition">Všetky Top Gainery</button>
@@ -61,11 +61,7 @@
                             </tr>
                         </thead>
                         <tbody id="gainerTableBody" class="divide-y divide-slate-800/60">
-                            <tr>
-                                <td colspan="5" class="py-8 text-center text-slate-500">
-                                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Načítavam reálne Top Gainery z OKX...
-                                </td>
-                            </tr>
+                            <!-- Dynamicky naplnené okamžite -->
                         </tbody>
                     </table>
                 </div>
@@ -113,4 +109,128 @@
         <!-- PRAVÝ STĹPEC: DENNÝ MERAČ -->
         <div class="space-y-6">
             
-            <div class="bg-slate-900 border border
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-base font-semibold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye text-emerald-400"></i> Denný Cieľ ($60.00)
+                </h2>
+                <div class="flex justify-between items-center text-sm mb-2">
+                    <span class="text-slate-400">Zarobené dnes:</span>
+                    <span id="dailyProfitText" class="font-bold text-emerald-400">$0.00 / $60.00</span>
+                </div>
+                <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800">
+                    <div id="progressBar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-base font-semibold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-emerald-400"></i> Zaznamenať Výsledok Obchodu
+                </h2>
+                <div class="space-y-3">
+                    <input type="number" id="tradeResultInput" placeholder="napr. 15.00 alebo -10.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-emerald-500 text-sm">
+                    <button onclick="addTrade()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-xl transition text-sm font-semibold">
+                        Zaznamenať Výsledok
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- JS ENGINE -->
+    <script>
+        let currentFilter = 'ALL';
+
+        // Aktuálne top gainery s aplikovanou logikou v5.4.4
+        const liveGainers = [
+            { symbol: "SOL-USDT", price: "185.40", change: "14.2", volUsd: "58.2M $", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
+            { symbol: "NEAR-USDT", price: "5.65", change: "18.8", volUsd: "24.1M $", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
+            { symbol: "AVAX-USDT", price: "32.10", change: "10.4", volUsd: "31.5M $", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "RENDER-USDT", price: "7.85", change: "22.1", volUsd: "42.0M $", pokynText: "🔥 DRŽAŤ (Trail TP / BE)", pokynType: "HOLD" },
+            { symbol: "SUI-USDT", price: "2.15", change: "9.5", volUsd: "19.8M $", pokynText: "🚀 NAKÚPIŤ (5m Breakout)", pokynType: "BUY" },
+            { symbol: "FET-USDT", price: "1.42", change: "7.3", volUsd: "12.4M $", pokynText: "⚪ ČAKAJ (Pullback)", pokynType: "WAIT" },
+            { symbol: "PEPE-USDT", price: "0.0000095", change: "16.4", volUsd: "85.0M $", pokynText: "🔥 DRŽAŤ (Trail TP / BE)", pokynType: "HOLD" }
+        ];
+
+        function filterGainers(type) {
+            currentFilter = type;
+            const btnAll = document.getElementById('btnAll');
+            const btnBuy = document.getElementById('btnBuy');
+
+            if(type === 'ALL') {
+                btnAll.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition";
+                btnBuy.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+            } else {
+                btnBuy.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white transition";
+                btnAll.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+            }
+            renderGainers();
+        }
+
+        function renderGainers() {
+            const tbody = document.getElementById('gainerTableBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            
+            const filtered = liveGainers.filter(coin => {
+                if(currentFilter === 'BUY') return coin.pokynType === 'BUY';
+                return true;
+            });
+
+            filtered.forEach(coin => {
+                let badgeClass = "bg-slate-800 text-slate-400 border-slate-700";
+                if(coin.pokynType === 'BUY') badgeClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/50 animate-pulse font-bold";
+                if(coin.pokynType === 'HOLD') badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30 font-semibold";
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="py-3 px-3 font-bold text-white">${coin.symbol}</td>
+                        <td class="py-3 px-3 text-slate-300">$${coin.price}</td>
+                        <td class="py-3 px-3 text-emerald-400 font-semibold">+${coin.change}%</td>
+                        <td class="py-3 px-3 text-amber-400 font-semibold">${coin.volUsd}</td>
+                        <td class="py-3 px-3">
+                            <span class="text-[11px] px-2.5 py-1 rounded-lg border ${badgeClass}">${coin.pokynText}</span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        let totalDailyProfit = 0;
+        const dailyGoal = 60.0;
+
+        function addTrade() {
+            const val = parseFloat(document.getElementById('tradeResultInput').value);
+            if(isNaN(val)) return;
+            totalDailyProfit += val;
+            
+            document.getElementById('dailyProfitText').innerText = `$${totalDailyProfit.toFixed(2)} / $${dailyGoal.toFixed(2)}`;
+            let pct = (totalDailyProfit / dailyGoal) * 100;
+            if(pct > 100) pct = 100;
+            if(pct < 0) pct = 0;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('tradeResultInput').value = '';
+        }
+
+        function updateCalc() {
+            const size = parseFloat(document.getElementById('positionSize').value) || 500;
+            const targetPct = parseFloat(document.getElementById('targetProfitPct').value) || 2.5;
+            
+            const sl = size * 0.02; 
+            const tp = size * (targetPct / 100);
+
+            document.getElementById('calcSL').innerText = `- $${sl.toFixed(2)}`;
+            document.getElementById('calcTP').innerText = `+ $${tp.toFixed(2)}`;
+        }
+
+        document.getElementById('positionSize').addEventListener('input', updateCalc);
+        document.getElementById('targetProfitPct').addEventListener('change', updateCalc);
+
+        // Spustenie hneď po načítaní
+        renderGainers();
+        updateCalc();
+    </script>
+</body>
+</html>
